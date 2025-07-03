@@ -9,9 +9,9 @@ $client_secret = "CpnLABAjtIjaziGu2nlBelLMB17XTD2c";
 $redirect_uri = "https://discord-auth-sunrise-rp-ucp.onrender.com/discord_callback.php";
 
 // Get user ID from URL (passed from main site)
-$sesuID = $_GET['uid'] ?? null;
+$sesuID = $_GET['state'] ?? null;
 if (!$sesuID) {
-    echo "User ID is missing.";
+    echo "User ID missing (state param)";
     exit;
 }
 
