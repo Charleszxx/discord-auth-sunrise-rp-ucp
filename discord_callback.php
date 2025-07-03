@@ -71,7 +71,7 @@ if (isset($_GET['code'])) {
     $stmt->bind_param("ss", $discord_user_id, $sesuID);
     
     if ($stmt->execute()) {
-        echo "<script>alert('Discord linked successfully!'); window.location.href='../index.php';</script>";
+        echo "<script>alert('Discord linked successfully!'); window.location.href='https://sunriserp-ucp.byethost15.com/pages/index.php';</script>";
     } else {
         echo "Failed to update DB: " . $stmt->error;
     }
