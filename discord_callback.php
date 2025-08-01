@@ -3,15 +3,21 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Discord app credentials
-$client_id = "1236520127869227131";
-$client_secret = "CpnLABAjtIjaziGu2nlBelLMB17XTD2c";
-$redirect_uri = "https://discord-auth-sunrise-rp-ucp.onrender.com/discord_callback.php";
+// Load environment variables from Render (or .env locally if needed)
+if (file_exists(__DIR__ . '/.env')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+    Dotenv\Dotenv::createImmutable(__DIR__)->load();
+}
 
-// Discord bot credentials
-$bot_token = "MTM2MDkzMDM1MTU3MjE5MzQ0Mg.G4vdQI.7k6QXTvsYO_jdRSIgHh4Jc_YgMRljROg4Fcedk"; // 🔒 Add your bot token
-$guild_id = "1399685590546518057";   // e.g. 123456789012345678
-$role_id = "1399732879986262128";   // Role to assign
+// Discord app credentials from environment
+$client_id     = getenv('CLIENT_ID');
+$client_secret = getenv('CLIENT_SECRET');
+$redirect_uri  = getenv('REDIRECT_URI');
+
+// Discord bot credentials from environment
+$bot_token = getenv('BOT_TOKEN');
+$guild_id  = getenv('GUILD_ID');
+$role_id   = getenv('ROLE_ID');
 
 // Get user ID from URL (passed from main site)
 $sesuID = $_GET['state'] ?? null;
@@ -30,12 +36,12 @@ $code = $_GET['code'];
 
 // Exchange code for access token
 $data = [
-    'client_id' => $client_id,
+    'client_id'     => $client_id,
     'client_secret' => $client_secret,
-    'grant_type' => 'authorization_code',
-    'code' => $code,
-    'redirect_uri' => $redirect_uri,
-    'scope' => 'identify guilds.join'
+    'grant_type'    => 'authorization_code',
+    'code'          => $code,
+    'redirect_uri'  => $redirect_uri,
+    'scope'         => 'identify guilds.join'
 ];
 
 $ch = curl_init('https://discord.com/api/oauth2/token');
