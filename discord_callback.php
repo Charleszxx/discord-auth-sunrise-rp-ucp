@@ -8,7 +8,7 @@ error_reporting(E_ALL);
 // Discord App credentials
 $client_id = "1360930351572193442";
 $client_secret = "aRgjpb3b9JR-dD2PfkH2W4BpL5T1wTQI";
-$redirect_uri = "https://sunriserp-ucp.byethost15.com/verification/discord_callback.php";
+$redirect_uri = "https://discord-auth-sunrise-rp-ucp.onrender.com/discord_callback.php";
 
 if (isset($_GET['code'])) {
     $code = $_GET['code'];
