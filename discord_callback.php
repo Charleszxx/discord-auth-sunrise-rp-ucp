@@ -26,6 +26,11 @@ if (!$sesuID) {
     exit;
 }
 
+if (!$sesuID || $sesuID === 'unknown') {
+    echo "Error: Invalid or missing state parameter. Please try connecting Discord again from your account page.";
+    exit;
+}
+
 // Make sure code exists
 if (!isset($_GET['code'])) {
     echo "No code provided.";
