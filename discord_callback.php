@@ -1,17 +1,11 @@
 <?php
 session_start();
 
-// Enable error reporting for debugging (disable in production)
+// Enable error reporting (disable in production)
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Load environment variables
-if (file_exists(__DIR__ . '/.env')) {
-    require_once __DIR__ . '/vendor/autoload.php';
-    Dotenv\Dotenv::createImmutable(__DIR__)->load();
-}
-
-// Required environment variables
+// Use getenv() — Render injects environment variables directly
 $client_id     = getenv('CLIENT_ID');
 $client_secret = getenv('CLIENT_SECRET');
 $redirect_uri  = getenv('REDIRECT_URI');
@@ -19,13 +13,13 @@ $bot_token     = getenv('BOT_TOKEN');
 $guild_id      = getenv('GUILD_ID');
 $role_id       = getenv('ROLE_ID');
 
-// Validate state parameter
+// Validate state
 $sesuID = $_GET['state'] ?? null;
 if (!$sesuID || $sesuID === 'unknown') {
     exit("Invalid or missing state parameter.");
 }
 
-// Validate authorization code
+// Validate code
 if (!isset($_GET['code'])) {
     exit("Missing authorization code.");
 }
@@ -48,16 +42,15 @@ if (!$userData || !isset($userData['id'])) {
 
 $discord_user_id = $userData['id'];
 
-// Database update
+// Update database
 require 'config.php';
 
 $stmt = $con->prepare("UPDATE users SET discord_userid = ?, discord_verified = 1 WHERE uid = ?");
 $stmt->execute([$discord_user_id, $sesuID]);
 
 if ($stmt->rowCount() > 0) {
-    // Assign Discord role
+    // Assign role
     $roleSuccess = assignDiscordRole($bot_token, $guild_id, $discord_user_id, $role_id);
-
     if ($roleSuccess) {
         echo "<script>alert('Discord linked and role assigned successfully!'); window.location.href='https://sunriserp-ucp.byethost15.com/pages/dashboard.php';</script>";
     } else {
