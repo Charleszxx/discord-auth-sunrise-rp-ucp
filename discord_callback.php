@@ -67,9 +67,10 @@ $discord_user_id = $userData['id'];
 require('config.php');
 
 try {
-    $stmt = $conn->prepare("UPDATE users SET discord_userid = ? WHERE uid = ?");
+    $stmt = $conn->prepare("UPDATE users SET discord_userid = ?, discord_verified = 1 WHERE uid = ?");
     $stmt->bind_param("ss", $discord_user_id, $state);
     $stmt->execute();
+
     echo "<script>alert('Discord linked successfully!'); window.location.href='https://sunriserp-ucp.byethost15.com/pages/dashboard.php';</script>";
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
