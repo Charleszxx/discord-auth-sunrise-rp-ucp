@@ -67,11 +67,9 @@ $discord_user_id = $userData['id'];
 require('config.php');
 
 try {
-    $stmt = $conn->prepare("UPDATE users SET discord_userid = :discord_id WHERE uid = :uid");
-    $stmt->execute([
-        ':discord_id' => $discord_user_id,
-        ':uid' => $state // Use the UID passed as state
-    ]);
+    $stmt = $conn->prepare("UPDATE users SET discord_userid = ? WHERE uid = ?");
+    $stmt->bind_param("ss", $discord_user_id, $state);
+    $stmt->execute();
     echo "<script>alert('Discord linked successfully!'); window.location.href='../pages/dashboard.php';</script>";
 } catch (PDOException $e) {
     die("Database error: " . $e->getMessage());
