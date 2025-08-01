@@ -1,4 +1,5 @@
 <?php
+require('config.php'); // Move this to the top so $con is defined
 session_start();
 
 ini_set('display_errors', 1);
