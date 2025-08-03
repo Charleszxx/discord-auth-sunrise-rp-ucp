@@ -12,7 +12,7 @@ function checkForLogin() {
 
 checkForLogin();
 
-$uid = $_SESSION['uid'] ?? null;
+$uid = $_POST['uid'] ?? null;
 
 // IMPORTANT: Secure your token properly! Do NOT hardcode it like this in production.
 $bot_token = getenv('DISCORD_BOT_TOKEN');
