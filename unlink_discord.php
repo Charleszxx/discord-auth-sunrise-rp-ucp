@@ -5,7 +5,7 @@ include 'config.php';
 // Define checkForLogin() function here
 function checkForLogin() {
   if (!isset($_SESSION['uid'])) {
-    header("Location: ../index.php");
+    header("Location: https://sunriserp-ucp.byethost15.com/index.php");
     exit;
   }
 }
