@@ -1,6 +1,15 @@
 <?php
 session_start();
 include 'config.php';
+
+// Define checkForLogin() function here
+function checkForLogin() {
+  if (!isset($_SESSION['uid'])) {
+    header("Location: ../index.php");
+    exit;
+  }
+}
+
 checkForLogin();
 
 $uid = $_SESSION['uid'] ?? null;
@@ -10,7 +19,7 @@ $bot_token = getenv('DISCORD_BOT_TOKEN');
 $guild_id = '1399685590546518057';
 
 if (!$uid) {
-  header('Location: ../index.php');
+  header('Location: https://sunriserp-ucp.byethost15.com/index.php');
   exit;
 }
 
@@ -23,7 +32,7 @@ try {
 
   if (!$discord_user_id) {
     $_SESSION['error'] = "No Discord account linked.";
-    header("Location: dashboard.php");
+    header("Location: https://sunriserp-ucp.byethost15.com/pages/dashboard.php");
     exit;
   }
 
@@ -52,7 +61,7 @@ try {
 
   if (!isset($dmData['id'])) {
     $_SESSION['error'] = "Failed to send DM.";
-    header("Location: dashboard.php");
+    header("Location: https://sunriserp-ucp.byethost15.com/pages/dashboard.php");
     exit;
   }
 
