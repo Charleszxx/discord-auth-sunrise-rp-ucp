@@ -110,13 +110,13 @@ $stmt->execute();
 // Step 6: Send embed message to channel
 $embed = [
     "title" => "✅ User Verified Successfully!",
-    "description" => "**@$username** has successfully verified their Discord account.",
+    "description" => "**@$username** has successfully completed Discord verification via the User Control Panel.",
     "color" => hexdec("FFD700"), // Yellow
     "thumbnail" => [
         "url" => $avatar_url
     ],
     "footer" => [
-        "text" => "Sunrise RP | Discord Verification"
+        "text" => "Sunrise Roleplay | User Control Panel Discord Verification"
     ],
     "timestamp" => date("c")
 ];
