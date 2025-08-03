@@ -13,8 +13,9 @@ $redirect_uri = "https://discord-auth-sunrise-rp-ucp.onrender.com/discord_callba
 $bot_token = getenv('DISCORD_BOT_TOKEN');
 
 $guild_id = "1399685590546518057";
-$role_id = "1399732879986262128";
+$role_id = "1399732879986262128"; // Verified role
 $announcement_channel_id = "1401395657020932208";
+$remove_role_id = "1401400270709194773"; // Role to remove after verified
 
 $state = $_GET['state'] ?? null;
 if (!$state) die("Missing UID (state).");
@@ -85,7 +86,7 @@ if ($joinCode != 201 && $joinCode != 204) {
     die("Failed to add user to guild. HTTP Code: $joinCode, Response: $joinResponse");
 }
 
-// Step 4: Assign role
+// Step 4: Assign verified role
 $role_url = "https://discord.com/api/guilds/$guild_id/members/$discord_user_id/roles/$role_id";
 $ch = curl_init($role_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -106,6 +107,24 @@ if ($roleCode != 204) {
 $stmt = $conn->prepare("UPDATE users SET discord_userid = ?, discord_verified = 1 WHERE uid = ?");
 $stmt->bind_param("ss", $discord_user_id, $state);
 $stmt->execute();
+
+// Step 5.1: Remove temporary role after verification
+$remove_url = "https://discord.com/api/guilds/$guild_id/members/$discord_user_id/roles/$remove_role_id";
+$ch = curl_init($remove_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bot $bot_token",
+    "Content-Type: application/json"
+]);
+$removeResponse = curl_exec($ch);
+$removeCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
+
+// Optional: You could log if role removal failed, but don’t halt script
+if ($removeCode != 204) {
+    error_log("Warning: Failed to remove role $remove_role_id from user $discord_user_id. HTTP Code: $removeCode");
+}
 
 // Step 6: Send embed message to channel
 $embed = [
