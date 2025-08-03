@@ -1,17 +1,28 @@
 <?php
-include 'config.php'; // Ensure DB connection is loaded
+// Database connection (MySQLi)
+$servername = "neutron.optiklink.com";
+$username = "u247379_Wyc8AuJUck";
+$password = "@Ev1I0Em3QjzO8GEJ!wtFGnw";
+$dbname = "s247379_sunriserp";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
 // Get UID from POST, not from session
 $uid = $_POST['uid'] ?? null;
-
 if (!$uid) {
   die("UID not provided.");
 }
 
 // Fetch user by UID
-$stmt = $con->prepare("SELECT * FROM users WHERE uid = ?");
-$stmt->execute([$uid]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $conn->prepare("SELECT * FROM users WHERE uid = ?");
+$stmt->bind_param("i", $uid);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+$stmt->close();
 
 if (!$user || empty($user['discord_userid'])) {
   die("No Discord account linked.");
@@ -19,15 +30,17 @@ if (!$user || empty($user['discord_userid'])) {
 
 $discordId = $user['discord_userid'];
 
-// Update user record to unlink
-$unlink = $con->prepare("UPDATE users SET discord_userid = NULL, discord_verified = 0 WHERE uid = ?");
-$success = $unlink->execute([$uid]);
+// Unlink the Discord account in the database
+$stmt = $conn->prepare("UPDATE users SET discord_userid = NULL, discord_verified = 0 WHERE uid = ?");
+$stmt->bind_param("i", $uid);
+$success = $stmt->execute();
+$stmt->close();
 
 if (!$success) {
   die("Failed to unlink Discord.");
 }
 
-// Send DM notification
+// Send DM via Discord bot
 $botToken = getenv("DISCORD_BOT_TOKEN");
 $createChannelUrl = "https://discord.com/api/v10/users/@me/channels";
 
@@ -44,7 +57,7 @@ $channel = json_decode($response, true);
 curl_close($ch);
 
 if (!isset($channel['id'])) {
-  // Couldn't create DM, but still unlinked
+  // Couldn't create DM, but unlink still successful
   header("Location: https://sunriserp-ucp.byethost15.com/pages/account.php?status=unlinked_nodm");
   exit;
 }
@@ -65,6 +78,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_exec($ch);
 curl_close($ch);
 
-// Redirect back to the panel
+// Redirect to account page
 header("Location: https://sunriserp-ucp.byethost15.com/pages/account.php?status=unlinked");
 exit;
+?>
