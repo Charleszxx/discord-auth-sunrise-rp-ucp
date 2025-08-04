@@ -64,7 +64,11 @@ if (!isset($channel['id'])) {
 
 $channelId = $channel['id'];
 $message = [
-    "content" => "Your Discord account was **unlinked** from the Sunrise RP UCP. If this wasn't you, please contact support."
+    "embeds" => [[
+        "title" => "🔗 Discord Unlinked",
+        "description" => "Hey there, Your Discord account was **unlinked** from the Sunrise RP UCP. If this wasn't you, please contact support.",
+        "color" => 16776960 // Yellow
+    ]]
 ];
 
 // Step 2: Send DM
