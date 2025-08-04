@@ -86,7 +86,7 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_exec($ch);
 curl_close($ch);
 
-// Redirect to account page
-header("Location: https://sunriserp-ucp.byethost15.com/pages/account.php?status=unlinked");
+// Redirect to dashboard page
+header("Location: https://sunriserp-ucp.byethost15.com/pages/dashboard.php?status=unlinked");
 exit;
 ?>
