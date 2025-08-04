@@ -156,6 +156,54 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 $discordNotifyResponse = curl_exec($ch);
 curl_close($ch);
 
+// Step 6.1: Send DM to the user
+$dmPayload = json_encode([
+    "recipient_id" => $discord_user_id
+]);
+
+// Create DM channel
+$ch = curl_init("https://discord.com/api/users/@me/channels");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $dmPayload);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bot $bot_token",
+    "Content-Type: application/json"
+]);
+$dmChannelResponse = curl_exec($ch);
+$dmChannelData = json_decode($dmChannelResponse, true);
+curl_close($ch);
+
+if (!isset($dmChannelData['id'])) {
+    error_log("Failed to create DM channel for user $discord_user_id. Response: $dmChannelResponse");
+} else {
+    $dmChannelId = $dmChannelData['id'];
+
+    // Send DM message
+    $dmMessage = [
+        "embeds" => [[
+            "title" => "✅ Discord Verification Successful",
+            "description" => "Your Discord account has been successfully linked and verified via the User Control Panel (UCP).\n\nWelcome aboard, and thank you for completing the verification process!",
+            "color" => hexdec("FFD700"), // Nice teal-green tone
+            "footer" => [
+                "text" => "Sunrise Roleplay | UCP Verification"
+            ],
+            "timestamp" => date("c")
+        ]]
+    ];
+
+    $ch = curl_init("https://discord.com/api/channels/$dmChannelId/messages");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($dmMessage));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bot $bot_token",
+        "Content-Type: application/json"
+    ]);
+    $dmSendResponse = curl_exec($ch);
+    curl_close($ch);
+}
+
 // Step 7: Redirect
 echo "<script>alert('Discord linked & role assigned to @$username!'); window.location.href='https://sunriserp-ucp.byethost15.com/pages/dashboard.php';</script>";
 ?>
