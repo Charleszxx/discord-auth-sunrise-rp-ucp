@@ -66,8 +66,12 @@ $channelId = $channel['id'];
 $message = [
     "embeds" => [[
         "title" => "🔗 Discord Unlinked",
-        "description" => "Hey there, Your Discord account was **unlinked** from the Sunrise RP UCP. If this wasn't you, please contact support.",
-        "color" => 16776960 // Yellow
+        "description" => "Your Discord account was **unlinked** from the Sunrise RP UCP. If this wasn't you, please contact support.",
+        "color" => 16776960, // Yellow
+        "footer" => [
+            "text" => "Sunrise Roleplay | UCP Verification "
+        ],
+        "timestamp" => date("c") // Adds the "Today at..." part automatically
     ]]
 ];
 
