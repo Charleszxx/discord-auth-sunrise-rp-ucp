@@ -176,7 +176,7 @@ function sendDiscordOTP($discord_user_id, $otp, $bot_token) {
       <?php elseif ($step === 3): ?>
         <div>
           <label for="new_password" class="block text-sm font-medium mb-1">New Password</label>
-          <input type="password" name="new_password" id="new_password" required class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter new password">
+          <input type="text" name="new_password" id="new_password" required class="w-full px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter new password">
         </div>
       <?php endif; ?>
 
