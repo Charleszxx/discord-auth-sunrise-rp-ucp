@@ -13,8 +13,7 @@ $step = $_SESSION['fp_step'];
 $bot_token = getenv('DISCORD_BOT_TOKEN');
 
 function WP_Hash($password) {
-    // Replace this logic with the exact one used by your game's WP_Hash
-    return hash('sha256', $password);
+    return strtoupper(hash('sha256', $password)); // SHA256 in uppercase
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
