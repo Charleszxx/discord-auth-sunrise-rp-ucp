@@ -12,6 +12,11 @@ if (!isset($_SESSION['fp_step'])) {
 $step = $_SESSION['fp_step'];
 $bot_token = getenv('DISCORD_BOT_TOKEN');
 
+function WP_Hash($password) {
+    // Replace this logic with the exact one used by your game's WP_Hash
+    return hash('sha256', $password);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($step) {
         case 1:
@@ -55,17 +60,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         case 3:
             if (isset($_POST['new_password'])) {
-                $newPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+                $newPassword = WP_Hash($_POST['new_password']); // Use in-game hashing
                 $uid = $_SESSION['fp_uid'];
-
+        
                 $stmt = $conn->prepare("UPDATE users SET password = ? WHERE uid = ?");
                 $stmt->bind_param("ss", $newPassword, $uid);
                 $stmt->execute();
-
+        
                 session_unset();
                 session_destroy();
-
-                echo "<script>alert('Password successfully changed! Please login again.'); window.location.href='login.php';</script>";
+        
+                echo "<script>alert('Password successfully changed! Please login again.'); window.location.href='https://sunriserp-ucp.byethost15.com';</script>";
                 exit;
             }
             break;
