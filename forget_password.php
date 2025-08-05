@@ -4,55 +4,71 @@ require('config.php');
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Step Control
-$step = $_SESSION['fp_step'] ?? 1;
+// Initialize step
+if (!isset($_SESSION['fp_step'])) {
+    $_SESSION['fp_step'] = 1;
+}
+
+$step = $_SESSION['fp_step'];
 $bot_token = getenv('DISCORD_BOT_TOKEN');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($step === 1 && isset($_POST['username'])) {
-        $username = $_POST['username'];
+    switch ($step) {
+        case 1:
+            if (isset($_POST['username'])) {
+                $username = trim($_POST['username']);
 
-        $stmt = $conn->prepare("SELECT uid, discord_userid FROM users WHERE username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+                $stmt = $conn->prepare("SELECT uid, discord_userid FROM users WHERE username = ?");
+                $stmt->bind_param("s", $username);
+                $stmt->execute();
+                $result = $stmt->get_result();
 
-        if ($result->num_rows === 1) {
-            $user = $result->fetch_assoc();
-            $_SESSION['fp_uid'] = $user['uid'];
-            $_SESSION['fp_discord_id'] = $user['discord_userid'];
+                if ($result->num_rows === 1) {
+                    $user = $result->fetch_assoc();
+                    $_SESSION['fp_uid'] = $user['uid'];
+                    $_SESSION['fp_discord_id'] = $user['discord_userid'];
 
-            $otp = rand(100000, 999999);
-            $_SESSION['fp_otp'] = $otp;
-            $_SESSION['fp_step'] = 2;
+                    $otp = rand(100000, 999999);
+                    $_SESSION['fp_otp'] = $otp;
+                    $_SESSION['fp_step'] = 2; // Move to next step
 
-            sendDiscordOTP($user['discord_userid'], $otp, $bot_token);
-            $message = "OTP sent to your Discord DM!";
-        } else {
-            $error = "Username not found.";
-        }
+                    sendDiscordOTP($user['discord_userid'], $otp, $bot_token);
+                    $step = 2;
+                    $message = "OTP sent to your Discord DM!";
+                } else {
+                    $error = "Username not found.";
+                }
+            }
+            break;
 
-    } elseif ($step === 2 && isset($_POST['otp'])) {
-        if ($_POST['otp'] == $_SESSION['fp_otp']) {
-            $_SESSION['fp_step'] = 3;
-            $message = "OTP verified. Please enter a new password.";
-        } else {
-            $error = "Invalid OTP. Please try again.";
-        }
+        case 2:
+            if (isset($_POST['otp'])) {
+                if ($_POST['otp'] == $_SESSION['fp_otp']) {
+                    $_SESSION['fp_step'] = 3;
+                    $step = 3;
+                    $message = "OTP verified. Please enter a new password.";
+                } else {
+                    $error = "Invalid OTP. Please try again.";
+                }
+            }
+            break;
 
-    } elseif ($step === 3 && isset($_POST['new_password'])) {
-        $newPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-        $uid = $_SESSION['fp_uid'];
+        case 3:
+            if (isset($_POST['new_password'])) {
+                $newPassword = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+                $uid = $_SESSION['fp_uid'];
 
-        $stmt = $conn->prepare("UPDATE users SET password = ? WHERE uid = ?");
-        $stmt->bind_param("ss", $newPassword, $uid);
-        $stmt->execute();
+                $stmt = $conn->prepare("UPDATE users SET password = ? WHERE uid = ?");
+                $stmt->bind_param("ss", $newPassword, $uid);
+                $stmt->execute();
 
-        session_unset();
-        session_destroy();
+                session_unset();
+                session_destroy();
 
-        echo "<script>alert('Password successfully changed! Please login again.'); window.location.href='login.php';</script>";
-        exit;
+                echo "<script>alert('Password successfully changed! Please login again.'); window.location.href='login.php';</script>";
+                exit;
+            }
+            break;
     }
 }
 
