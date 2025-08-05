@@ -134,7 +134,7 @@ function sendDiscordOTP($discord_user_id, $otp, $bot_token) {
 
   <div class="bg-card dark:bg-darkcard rounded-xl shadow-lg p-8 w-full max-w-md">
     <div class="flex justify-center mb-4">
-      <img src="files/images/logo.png" alt="Logo" class="h-16 w-16 object-contain" />
+      <img src="https://sunriserp-ucp.byethost15.com/files/images/logo.png" alt="Logo" class="h-16 w-16 object-contain" />
     </div>
     <p class="text-center">Sunrise Roleplay - UCP</p>
     <h2 class="text-2xl font-semibold text-center mb-4">Reset your password</h2>
