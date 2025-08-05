@@ -13,7 +13,7 @@ $step = $_SESSION['fp_step'];
 $bot_token = getenv('DISCORD_BOT_TOKEN');
 
 function WP_Hash($password) {
-    return strtoupper(hash('sha256', $password)); // SHA256 in uppercase
+    return hash('sha512', $password); // SHA-512, lowercase (recommended)
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
