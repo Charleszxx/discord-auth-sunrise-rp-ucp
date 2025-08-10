@@ -2,7 +2,7 @@
 
 	$servername = "neutron.optiklink.com";
     $username = "u247379_Wyc8AuJUck";
-    $password = "@Ev1I0Em3QjzO8GEJ!wtFGnw";
+    $password = "++jOeOz908+aN1yC8DpkF@Mx";
     $dbname = "s247379_sunriserp";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
