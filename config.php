@@ -1,9 +1,9 @@
 <?php
 
-	$servername = "neutron.optiklink.com";
-    $username = "u247379_Wyc8AuJUck";
-    $password = "++jOeOz908+aN1yC8DpkF@Mx";
-    $dbname = "s247379_sunriserp";
+	$servername = "sunrisesql.playsamp.fun";
+    $username = "u3_YIcbXbJcGr";
+    $password = "p!bt3YORm=iQVlCU5+WM0Ycd";
+    $dbname = "s3_sunriserp";
 
     $conn = new mysqli($servername, $username, $password, $dbname);
 
